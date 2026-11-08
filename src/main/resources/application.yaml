@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: clinic-service
+
+  datasource:
+    url: ${CLINIC_DB_URL:jdbc:postgresql://localhost:5432/clinic_service}
+    username: ${CLINIC_DB_USERNAME:postgres}
+    password: ${CLINIC_DB_PASSWORD:1234}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: clinic-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.example.clinic.dto.event.PaymentSuccessEvent
+        spring.json.use.type.headers: false
+
+server:
+  port: 9003
+
+jwt:
+  secret-key: ${JWT_SECRET:5c4b406804cf14ef2fea719598e07d7d7c6c15d26eea55040597cb2ab6a6d35b}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    prefer-ip-address: true
+
+clinic:
+  booking-hold-minutes: 10
+  timezone: Asia/Ho_Chi_Minh
